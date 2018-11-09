@@ -57,6 +57,7 @@ namespace Ooui.Forms.Renderers
                 UpdateRowHeight();
 
                 UpdateItems ();
+                UpdateSeparator ();
                 UpdateBackgroundColor ();
             }
 
@@ -69,6 +70,10 @@ namespace Ooui.Forms.Renderers
 
             if (e.PropertyName == ItemsView<Cell>.ItemsSourceProperty.PropertyName)
                 UpdateItems ();
+            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorColorProperty.PropertyName)
+                UpdateSeparator ();
+            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorVisibilityProperty.PropertyName)
+                UpdateSeparator ();
         }
 
         protected override void Dispose (bool disposing)
@@ -105,6 +110,7 @@ namespace Ooui.Forms.Renderers
         private void OnCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateItems ();
+            UpdateSeparator ();
         }
 
         private void UnsubscribeCellClicks ()
@@ -137,11 +143,6 @@ namespace Ooui.Forms.Renderers
                 for (var i = listItems.Count; i < items.Count; i++) {
                     var li = new ListItem ();
                     li.Style["list-style-type"] = "none";
-                    if (Element.SeparatorVisibility == SeparatorVisibility.Default)
-                    {
-                        var color = Element.SeparatorColor.ToOouiColor(Color.FromStyleValue("#999"));
-                        li.Style["border-bottom"] = string.Format("{0}px {1} {2}", 1, "solid", color.ToString());
-                    }
                     li.Click += ListItem_Click;
                     Control.AppendChild (li);
                     listItems.Add (li);
@@ -175,6 +176,27 @@ namespace Ooui.Forms.Renderers
                         li.AppendChild (cell);
                     }
                     i++;
+                }
+            }
+        }
+
+        private void UpdateSeparator()
+        {
+            if (Control == null)
+                return;
+
+            var listItems = Control.Children.OfType<ListItem>().ToList();
+
+            foreach (var li in listItems)
+            {
+                if (Element.SeparatorVisibility == SeparatorVisibility.Default)
+                {
+                    var color = Element.SeparatorColor.ToOouiColor(Color.FromStyleValue("#999"));
+                    li.Style["border-bottom"] = string.Format("{0}px {1} {2}", 1, "solid", color.ToString());
+                } 
+                else
+                {
+                    li.Style["border-bottom"] = null;
                 }
             }
         }
