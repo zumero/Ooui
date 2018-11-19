@@ -92,30 +92,6 @@ namespace Ooui.Forms.Renderers
             }
         }
 
-        void OnLoad(object sender, EventArgs eventArgs)
-        {
-            var args = (TargetEventArgs)eventArgs;
-            var b = Element.Bounds;
-            double scale = 1;
-
-            if (Math.Abs(b.Width) > 0)
-            {
-                scale = b.Width / args.ClientWidth;
-                Element.WidthRequest = b.Width;
-                Element.HeightRequest = scale * args.ClientHeight;
-            }
-            else if (Math.Abs(b.Height) > 0)
-            {
-                scale = b.Height / args.ClientHeight;
-                Element.WidthRequest = scale * args.ClientWidth;
-                Element.HeightRequest = b.Height;
-            }
-            else
-            {
-                // We can't really know what to do in this case
-            }
-        }
-
         void SetAspect ()
         {
             if (_isDisposed || Element == null || Control == null) {
