@@ -71,12 +71,7 @@ namespace Ooui.Forms.Renderers
             base.OnElementPropertyChanged (sender, e);
 
             if (e.PropertyName == ItemsView<Cell>.ItemsSourceProperty.PropertyName)
-                UpdateItems ();
-
-            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorColorProperty.PropertyName)
-                UpdateSeparator ();
-            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorVisibilityProperty.PropertyName)
-                UpdateSeparator ();
+                UpdateItems();
             else if (e.PropertyName == Xamarin.Forms.ListView.RowHeightProperty.PropertyName)
             {
                 UpdateRowHeight();
@@ -100,6 +95,10 @@ namespace Ooui.Forms.Renderers
                 }
                 _timer.Start();
             }
+            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorColorProperty.PropertyName)
+                UpdateSeparator ();
+            else if (e.PropertyName == Xamarin.Forms.ListView.SeparatorVisibilityProperty.PropertyName)
+                UpdateSeparator ();
         }
 
         protected override void Dispose (bool disposing)
