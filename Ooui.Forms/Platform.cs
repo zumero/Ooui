@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Ooui.Forms.Renderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using static Xamarin.Forms.Forms;
 
 namespace Ooui.Forms
 {
@@ -34,6 +35,8 @@ namespace Ooui.Forms
 
             _renderer.Style.PropertyChanged += HandleRendererStyle_PropertyChanged;
 
+            ((OouiPlatformServices)Device.PlatformServices).NotifyOpenUriRequested += HandleOpenUriRequested;
+           
             MessagingCenter.Subscribe (this, Page.AlertSignalName, (Page sender, AlertArguments arguments) => {
                 var alert = new DisplayAlert (arguments);
                 alert.Clicked += CloseAlert;
@@ -60,6 +63,13 @@ namespace Ooui.Forms
             });
         }
 
+        private void HandleOpenUriRequested(object sender, Uri uri)
+        {
+            var script = new OouiOpenUri(uri);
+         
+            _renderer.AppendChild(script.Element);          
+        }
+
         void IDisposable.Dispose ()
         {
             if (_disposed)
@@ -69,7 +79,7 @@ namespace Ooui.Forms
             MessagingCenter.Unsubscribe<Page, ActionSheetArguments> (this, Page.ActionSheetSignalName);
             MessagingCenter.Unsubscribe<Page, AlertArguments> (this, Page.AlertSignalName);
             MessagingCenter.Unsubscribe<Page, bool> (this, Page.BusySetSignalName);
-
+            ((OouiPlatformServices)Device.PlatformServices).NotifyOpenUriRequested -= HandleOpenUriRequested;
             DisposeModelAndChildrenRenderers (Page);
             //foreach (var modal in _modals)
                 //DisposeModelAndChildrenRenderers (modal);

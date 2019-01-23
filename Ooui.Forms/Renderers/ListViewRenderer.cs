@@ -7,6 +7,7 @@ using System.Timers;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Ooui.Forms.Cells;
+using System;
 
 namespace Ooui.Forms.Renderers
 {
@@ -31,6 +32,8 @@ namespace Ooui.Forms.Renderers
 
         ITemplatedItemsView<Cell> TemplatedItemsView => Element;
 
+  
+
         protected override void OnElementChanged (ElementChangedEventArgs<ListView> e)
         {
             if (e.OldElement != null) {
@@ -42,7 +45,7 @@ namespace Ooui.Forms.Renderers
             if (e.NewElement != null) {
                 if (Control == null) {
                     var list = new List ();
-                    list.Style.Overflow = "scroll";
+                    list.Style.Overflow = "auto";
                     list.Style.Padding = "0";
                     // Make the list element positioned so child elements will
                     // be positioned relative to it. This will allow the list
@@ -66,6 +69,7 @@ namespace Ooui.Forms.Renderers
             base.OnElementChanged (e);
         }
 
+        
         protected override void OnElementPropertyChanged (object sender, PropertyChangedEventArgs e)
         {
             base.OnElementPropertyChanged (sender, e);
@@ -76,6 +80,11 @@ namespace Ooui.Forms.Renderers
             {
                 UpdateRowHeight();
                 UpdateItems();
+            }
+            else if (e.PropertyName == Xamarin.Forms.ListView.SelectedItemProperty.PropertyName)
+            {
+                var selectedItem = ((ListView)sender).SelectedItem;
+                UpdateSelectedItemBackground(selectedItem);           
             }
             else if (e.PropertyName == VisualElement.WidthProperty.PropertyName)
             {
@@ -148,7 +157,7 @@ namespace Ooui.Forms.Renderers
             }
         }
 
-        private void UpdateItems ()
+        private void UpdateItems (int selectedIndex = -1)
         {
             if (Control == null)
                 return;
@@ -181,15 +190,27 @@ namespace Ooui.Forms.Renderers
             }
             else {
                 var i = 0;
+                var backgroundColor = Element.BackgroundColor.ToOouiColor(Xamarin.Forms.Color.White);
+                var highlightColor = Xamarin.Forms.Color.Accent.ToOouiColor();
                 double offset = 0;
                 foreach (var item in items) {
+                   
                     var li = listItems[i];
                     var nativeCell = items[i];
-                    var children = li.Children;
+                    var children = li.Children;                    
                     var rv = children.Count > 0 ? children[0] as CellElement : null;
-                    var cell = GetCell (item, rv);
+                    var cell = GetCell (item, rv);                    
                     var height = CalculateHeightForCell(nativeCell);
+                    var background = GetBackgroundColorForCell(nativeCell);
                     li.Style.Height = height;
+                    if (i == selectedIndex)
+                    {
+                        li.Style.BackgroundColor = highlightColor;                       
+                    }
+                    else
+                    {
+                        li.Style.BackgroundColor = backgroundColor;
+                    }
                     var viewCell = (ViewCell)cell.Cell;
                     if (viewCell != null && viewCell.View != null)
                     {
@@ -205,10 +226,28 @@ namespace Ooui.Forms.Renderers
             }
         }
 
+        private object GetBackgroundColorForCell(Cell nativeCell)
+        {
+            //   var textColor = (Xamarin.Forms.Color)Element.GetValue(TimePicker.TextColorProperty);
+            var viewCell = nativeCell as ViewCell;
+            var val = viewCell.GetValue(ListView.StyleProperty);
+            return null;
+        }
+
+        private void UpdateSelectedItemBackground(object selectedItem)
+        {
+            if (selectedItem == null || TemplatedItemsView.TemplatedItems.ItemsSource == null)
+                return;
+
+            int selectedIndex = TemplatedItemsView.TemplatedItems.ItemsSource.Cast<object>().ToList().IndexOf(selectedItem);
+            if (selectedIndex >= 0)
+                UpdateItems(selectedIndex);
+        }
+
         private void UpdateSeparator()
         {
             if (Control == null)
-                return;
+                return;            
 
             var listItems = Control.Children.OfType<ListItem>().ToList();
 
@@ -271,6 +310,7 @@ namespace Ooui.Forms.Renderers
             else 
             {
                 var viewCell = cell as ViewCell;
+              
                 if (viewCell != null && viewCell.View != null)
                 {
                     var target = viewCell.View;
@@ -318,7 +358,7 @@ namespace Ooui.Forms.Renderers
             var renderer = (Cells.CellRenderer)Registrar.Registered.GetHandlerForObject<IRegisterable> (cell);
 
             var realCell = renderer.GetCellElement (cell, reusableView, Control);
-
+            
             return realCell;
         }
     }

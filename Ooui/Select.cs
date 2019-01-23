@@ -36,8 +36,9 @@ namespace Ooui
         }
 
         public void AddOption (string label, string value)
-        {
-            AppendChild (new Option { Text = label, Value = value });
+        {         
+            if (Children.Count(c => ((Option)c).Value == value) == 0)
+                AppendChild (new Option { Text = label, Value = value });
         }
 
         string GetDefaultValue ()

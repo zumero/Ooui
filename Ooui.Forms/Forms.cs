@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 using Ooui;
 
 namespace Xamarin.Forms
-{
+{  
+
     public static class Forms
-    {
+    {        
         public static bool IsInitialized { get; private set; }
 
         public static void Init ()
@@ -51,8 +52,12 @@ namespace Xamarin.Forms
             public override double ScalingFactor => 1;
         }
 
-        class OouiPlatformServices : IPlatformServices
+        public class OouiPlatformServices : IPlatformServices
         {
+            public delegate void OpenUriRequested(Object sender, Uri uri);
+
+            public OpenUriRequested NotifyOpenUriRequested;
+
             public bool IsInvokeRequired => false;
 
             public string RuntimePlatform => "Ooui";
@@ -101,7 +106,7 @@ namespace Xamarin.Forms
 
             public void OpenUriAction (Uri uri)
             {
-                throw new NotImplementedException ();
+                NotifyOpenUriRequested?.Invoke(this, uri);
             }
 
             public void StartTimer (TimeSpan interval, Func<bool> callback)

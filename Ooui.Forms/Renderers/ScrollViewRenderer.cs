@@ -16,7 +16,7 @@ namespace Ooui.Forms.Renderers
             }
 
             if (e.NewElement != null) {
-                Style.Overflow = "scroll";
+                Style.Overflow = "auto";
 
                 e.NewElement.ScrollToRequested += Element_ScrollToRequested;
             }
