@@ -10,7 +10,7 @@ namespace Ooui.Forms
 
         public OouiOpenUri(Uri uri)
         {
-            Element = new Script("window.location.href='" + uri.ToString() + @"'");          
+            Element = new Script(string.Format("window.location.href='{0}'", uri.ToString()));          
         }       
     }
 }

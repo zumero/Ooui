@@ -133,6 +133,7 @@ namespace Ooui.Forms.Renderers
                 {
                     Button.Style.BackgroundImage = uiimage;
                     Button.Style.BackgroundPosition = "center";
+                    Button.Style.BackgroundRepeat = "no-repeat";
                 }
             }
             else

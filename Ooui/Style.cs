@@ -35,6 +35,11 @@ namespace Ooui
             set => this["background-image"] = AddUrl(value);
         }
 
+        public Value BackgroundRepeat {
+            get => this["background-repeat"];
+            set => this["background-repeat"] = value;
+        }
+
         public Value BackgroundPosition {
             get => this["background-position"];
             set => this["background-position"] = value;
