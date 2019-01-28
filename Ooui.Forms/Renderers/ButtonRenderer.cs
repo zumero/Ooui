@@ -13,8 +13,14 @@ namespace Ooui.Forms.Renderers
         Ooui.Color _buttonTextColorDefaultNormal;
 
         public override SizeRequest GetDesiredSize (double widthConstraint, double heightConstraint)
-        {
-            var size = Element.Text.MeasureSize (Element.FontFamily, Element.FontSize, Element.FontAttributes, widthConstraint, heightConstraint);
+        {         
+            Size size;
+            
+            if (string.IsNullOrEmpty(Element.Text))           
+                size = new Size(Element.FontSize, (int)(Element.FontSize * 1.42857143));           
+            else           
+                size = Element.Text.MeasureSize(Element.FontFamily, Element.FontSize, Element.FontAttributes, widthConstraint, heightConstraint);
+            
             size = new Size (size.Width + 32, size.Height + 16);
             return new SizeRequest (size, size);
         }
