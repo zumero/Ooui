@@ -25,13 +25,7 @@ namespace Ooui
 
         public bool IsHidden {
             get => GetBooleanAttribute ("hidden");
-            set
-            {
-                // This is necessary for element that also set the display css
-                // property (e.g. label elements set display: table-cell).
-                Style.Visibility = value ? "hidden" : null;
-                SetBooleanAttributeProperty("hidden", value);
-            }
+            set => SetBooleanAttributeProperty ("hidden", value);
         }
 
         public event TargetEventHandler Click {
